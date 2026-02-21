@@ -3,215 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lic. en Administración - Progreso</title>
+<title>Malla Licenciatura en Administración — UNLP</title>
 
 <style>
-/* ===== FONDO AESTHETIC ===== */
+:root{
+  --primary:#540212;
+  --bg:#0e0e11;
+  --card:#1a1a22;
+  --text:#f2f2f2;
+  --locked:#3a3a44;
+  --accent:#7a0d26;
+}
+
+/* ===== FONDO AESTHETIC PROFUNDO ===== */
+body{
+  margin:0;
+  font-family:Segoe UI, sans-serif;
+  color:var(--text);
+  background:#0b0b0f;
+  position:relative;
+  overflow-x:hidden;
+}
+
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  z-index:-2;
+  z-index:-1;
   background:
     radial-gradient(circle at 20% 30%, #540212 0%, transparent 40%),
-    radial-gradient(circle at 80% 20%, #2b2b2b 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, #000000 0%, transparent 45%),
-    radial-gradient(circle at 70% 60%, #540212 0%, transparent 35%),
-    #0a0a0a;
-  filter: blur(60px);
+    radial-gradient(circle at 80% 20%, #2b2b2b 0%, transparent 45%),
+    radial-gradient(circle at 60% 80%, #000000 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, #540212 0%, transparent 35%),
+    #0b0b0f;
+  filter:blur(60px);
 }
 
-/* ===== GENERAL ===== */
-body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  color:white;
+h1{
+  text-align:center;
+  margin:20px 0;
 }
 
-header{
-  padding:15px 20px;
+.container{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
+  gap:20px;
+  padding:20px;
+  overflow:auto;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
-#porcentaje{
-  font-weight:bold;
+.cycle{
+  background:var(--card);
+  border-radius:12px;
+  padding:15px;
+  min-width:280px;
+  box-shadow:0 0 10px rgba(0,0,0,.4);
+}
+
+.cycle h2{
+  text-align:center;
+  border-bottom:1px solid #444;
+  padding-bottom:5px;
+}
+
+.year{
+  margin-top:15px;
+}
+
+.year h3{
+  margin:10px 0 5px;
+  color:#bbb;
+}
+
+.subject{
+  background:white;
+  color:black;
+  border-radius:8px;
+  padding:8px;
+  margin:6px 0;
+  cursor:pointer;
+  position:relative;
+  transition:.2s;
+  font-size:.9rem;
+}
+
+.subject small{
+  display:block;
+  font-size:.7rem;
+  opacity:.7;
+}
+
+.subject.locked{
+  background:var(--locked);
+  color:#aaa;
+  cursor:not-allowed;
+}
+
+.subject.approved{
+  background:var(--primary);
+  color:white;
+  transform:scale(1.03);
+  box-shadow:0 0 10px var(--primary);
+}
+
+.subject:hover{
+  transform:scale(1.05);
+}
+
+.tooltip{
+  position:absolute;
+  top:-5px;
+  right:-5px;
   background:#111;
-  padding:8px 14px;
+  color:white;
+  font-size:.65rem;
+  padding:4px 6px;
+  border-radius:5px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  white-space:nowrap;
+}
+
+.subject:hover .tooltip{
+  opacity:1;
+}
+
+#topCounter{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#111;
+  padding:10px 14px;
   border-radius:10px;
-  border:1px solid #540212;
+  font-weight:bold;
+  box-shadow:0 0 10px var(--primary);
+}
+
+.buttons{
+  text-align:center;
+  margin:30px 0 10px;
 }
 
 button{
-  background:#540212;
-  color:white;
+  background:var(--primary);
   border:none;
-  padding:8px 12px;
+  color:white;
+  padding:10px 18px;
+  margin:5px;
   border-radius:8px;
   cursor:pointer;
+  font-weight:bold;
 }
 
-/* ===== GRID ===== */
-.container{
-  padding:20px;
-  display:grid;
-  gap:20px;
+button:hover{
+  background:var(--accent);
 }
 
-.pc .container{
-  grid-template-columns:repeat(2,1fr);
+.unlockAnim{
+  animation:pop .4s ease;
 }
 
-.celular .container{
-  grid-template-columns:1fr;
+@keyframes pop{
+  0%{transform:scale(.7);}
+  100%{transform:scale(1);}
 }
 
-/* ===== SECCIONES ===== */
-.section{
-  background:#111;
-  border:1px solid #540212;
-  border-radius:12px;
-  padding:15px;
+.flash{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  font-size:2rem;
+  color:white;
+  animation:fade 1s ease forwards;
 }
 
-.section h2{
-  margin-top:0;
+@keyframes fade{
+  0%{opacity:1;}
+  100%{opacity:0;}
 }
 
-/* ===== MATERIAS ===== */
-.materia{
-  background:#1a1a1a;
-  border:1px solid #333;
-  border-radius:10px;
-  padding:10px;
-  margin:6px 0;
-  cursor:pointer;
+.vertical .container{
+  flex-direction:column;
+  align-items:center;
 }
 
-.materia.aprobada{
-  background:#540212;
-  border-color:#540212;
+/* ===== ELECTIVAS MÁS HORIZONTAL SOLO EN MODO NORMAL ===== */
+body:not(.vertical) .cycle:has(h2:contains("Electivas")){
+  min-width:520px;
 }
 </style>
 </head>
 
-<body class="pc">
+<body>
 
-<header>
-  <button id="modoBtn" onclick="toggleModo()">Modo celular</button>
-  <div id="porcentaje">0% carrera completada</div>
-</header>
+<h1>Licenciatura en Administración — UNLP</h1>
 
-<div class="container">
+<div id="topCounter">0% completado</div>
 
-<!-- PROPEDÉUTICO -->
-<div class="section">
-<h2>Ciclo Propedéutico</h2>
-<div class="materia">8.1.0 Introducción a los Estudios Universitarios</div>
-<div class="materia">8.1.2 Introducción a la Economía y Estructura Económica Argentina</div>
-<div class="materia">8.1.3 Administración I</div>
-<div class="materia">8.1.1 Contabilidad I</div>
-</div>
+<div class="container" id="malla"></div>
 
-<!-- BÁSICO -->
-<div class="section">
-<h2>Ciclo Básico</h2>
-<div class="materia">8.1.4 Microeconomía I</div>
-<div class="materia">8.1.5 Matemática para Administradores</div>
-<div class="materia">8.1.6 Comportamiento Humano en las Organizaciones</div>
-<div class="materia">8.1.7 Pensamiento Social y Científico</div>
-<div class="materia">8.2.2 Macroeconomía I</div>
-<div class="materia">8.2.1 Interpretación de los Estados Contables</div>
-<div class="materia">8.2.3 Administración Estratégica</div>
-<div class="materia">8.2.4 Gestión Pública</div>
-<div class="materia">8.2.5 Estadística Aplicada</div>
-<div class="materia">8.2.6 Costos para la Gestión</div>
-<div class="materia">8.2.7 Elementos del Derecho Público y Privado</div>
-</div>
-
-<!-- PROFESIONAL -->
-<div class="section">
-<h2>Ciclo Profesional</h2>
-<div class="materia">8.3.1 Marketing Estratégico</div>
-<div class="materia">8.3.2 Diseño de Sistemas de Información</div>
-<div class="materia">8.3.3 Cálculo Financiero</div>
-<div class="materia">8.3.4 Gestión de las Personas I</div>
-<div class="materia">8.3.5 Planeamiento y Control Organizacional</div>
-<div class="materia">8.3.6 Operaciones</div>
-<div class="materia">8.4.1 Marketing Operativo</div>
-<div class="materia">8.4.2 Estrategia Tecnológica y Gestión de Proyectos IT</div>
-<div class="materia">8.4.3 Finanzas de Empresas</div>
-<div class="materia">8.4.6 Gestión de las Personas II</div>
-<div class="materia">8.4.7 Derecho Empresario</div>
-<div class="materia">8.4.8 Dirección General</div>
-</div>
-
-<!-- ELECTIVAS -->
-<div class="section">
-<h2>Electivas</h2>
-<div class="materia">8.4.4 Finanzas Públicas</div>
-<div class="materia">8.4.5 Psicosociología Organizacional</div>
-<div class="materia">8.4.9 Finanzas Avanzadas</div>
-<div class="materia">8.4.10 Inteligencia de Negocios</div>
-<div class="materia">Optativa</div>
-</div>
-
+<div class="buttons">
+  <button id="toggleMode">Modo vertical</button>
+  <button id="resetBtn">Resetear malla</button>
 </div>
 
 <script>
-const materias = document.querySelectorAll(".materia");
-const total = materias.length;
-const porcentajeTxt = document.getElementById("porcentaje");
-const modoBtn = document.getElementById("modoBtn");
 
-/* aprobar / desaprobar */
-materias.forEach(m=>{
-  m.addEventListener("click",()=>{
-    m.classList.toggle("aprobada");
-    guardar();
-    actualizar();
+const materias = [
+
+{c:"8.1.0",n:"Introducción a los Estudios Universitarios",h:48,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+{c:"8.1.2",n:"Introducción a la Economía y Estructura Económica Argentina",h:64,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+{c:"8.1.3",n:"Administración I (Introducción a la Administración y al Estudio de las Organizaciones)",h:128,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+{c:"8.1.1",n:"Contabilidad I (Bases y Fundamentos)",h:128,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+
+{c:"8.1.4",n:"Microeconomía I",h:96,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.2"]},
+{c:"8.1.5",n:"Matemática para Administradores",h:96,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.2"]},
+{c:"8.1.6",n:"Comportamiento Humano en las Organizaciones",h:64,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.3"]},
+{c:"8.1.7",n:"Pensamiento Social y Científico",h:64,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.3"]},
+
+{c:"8.2.2",n:"Macroeconomía I",h:96,cy:"Básico",y:"2° año — 1° semestre",cor:["8.1.2"]},
+{c:"8.2.1",n:"Interpretación de los Estados Contables",h:96,cy:"Básico",y:"2° año — 1° semestre",cor:["8.1.1"]},
+{c:"8.2.3",n:"Administración Estratégica",h:96,cy:"Básico",y:"2° año — 1° semestre",cor:["8.1.3"]},
+
+{c:"8.2.4",n:"Gestión Pública",h:64,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.6"]},
+{c:"8.2.5",n:"Estadística Aplicada",h:96,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.5"]},
+{c:"8.2.6",n:"Costos para la Gestión (LA)",h:64,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.3","8.1.5"]},
+{c:"8.2.7",n:"Elementos del Derecho Público y Privado",h:64,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.7"]},
+
+{c:"8.3.1",n:"Marketing Estratégico",h:96,cy:"Profesional",y:"3° año — 1° semestre",cor:["8.2.3"]},
+{c:"8.3.2",n:"Diseño de Sistemas de Información",h:96,cy:"Profesional",y:"3° año — 1° semestre",cor:["8.1.7","8.2.3"]},
+{c:"8.3.3",n:"Cálculo Financiero",h:96,cy:"Profesional",y:"3° año — 1° semestre",cor:["8.1.5","8.2.1","8.2.3"]},
+
+{c:"8.3.4",n:"Gestión de las Personas en las Organizaciones I",h:96,cy:"Profesional",y:"3° año — 2° semestre",cor:["8.1.6","8.2.3"]},
+{c:"8.3.5",n:"Planeamiento y Control Organizacional",h:96,cy:"Profesional",y:"3° año — 2° semestre",cor:["8.2.1","8.2.3","8.2.6"]},
+{c:"8.3.6",n:"Operaciones",h:96,cy:"Profesional",y:"3° año — 2° semestre",cor:["8.2.3","8.2.6"]},
+
+{c:"8.4.1",n:"Marketing Operativo",h:64,cy:"Profesional",y:"4° año — 1° semestre",cor:["8.2.5","8.3.1"]},
+{c:"8.4.2",n:"Estrategia Tecnológica y Gestión de Proyectos IT",h:64,cy:"Profesional",y:"4° año — 1° semestre",cor:["8.3.2"]},
+{c:"8.4.3",n:"Finanzas de Empresas",h:96,cy:"Profesional",y:"4° año — 1° semestre",cor:["8.3.3"]},
+
+{c:"8.4.6",n:"Gestión de las Personas en las Organizaciones II",h:64,cy:"Profesional",y:"4° año — 2° semestre",cor:["8.3.4"]},
+{c:"8.4.7",n:"Derecho Empresario",h:64,cy:"Profesional",y:"4° año — 2° semestre",cor:["8.2.7"]},
+{c:"8.4.8",n:"Dirección General",h:96,cy:"Profesional",y:"4° año — 2° semestre",cor:["8.2.6","8.3.1","8.3.3","8.3.5"]},
+
+{c:"8.4.4",n:"Finanzas Públicas",h:48,cy:"Electivas",y:"Electiva",cor:["8.1.4","8.1.7"]},
+{c:"8.4.5",n:"Psicosociología Organizacional",h:48,cy:"Electivas",y:"Electiva",cor:["8.1.6"]},
+{c:"8.4.9",n:"Finanzas Avanzadas en Entidades Públicas y Privadas",h:48,cy:"Electivas",y:"Electiva",cor:["8.4.3"]},
+{c:"8.4.10",n:"Inteligencia de Negocios y Análisis de Datos",h:48,cy:"Electivas",y:"Electiva",cor:["8.2.3","8.2.5"]},
+{c:"OPT",n:"Materia Optativa",h:48,cy:"Electivas",y:"Electiva",cor:[]}
+
+];
+
+const estado = JSON.parse(localStorage.getItem("estadoAdm")||"{}");
+const malla = document.getElementById("malla");
+
+function cumplidas(m){
+  return m.cor.every(c=>estado[c]);
+}
+
+function crear(){
+
+  malla.innerHTML="";
+
+  const ciclos = [...new Set(materias.map(m=>m.cy))];
+
+  ciclos.forEach(ciclo=>{
+
+    const box=document.createElement("div");
+    box.className="cycle";
+    box.innerHTML=`<h2>${ciclo}</h2>`;
+
+    const years=[...new Set(materias.filter(m=>m.cy===ciclo).map(m=>m.y))];
+
+    years.forEach(y=>{
+      const yDiv=document.createElement("div");
+      yDiv.className="year";
+      yDiv.innerHTML=`<h3>${y}</h3>`;
+
+      materias.filter(m=>m.cy===ciclo && m.y===y)
+      .forEach(mat=>{
+
+        const d=document.createElement("div");
+        d.className="subject";
+        d.dataset.c=mat.c;
+
+        if(estado[mat.c]) d.classList.add("approved");
+        else if(!cumplidas(mat)) d.classList.add("locked");
+
+        d.innerHTML=`
+          <small>${mat.c}</small>
+          ${mat.n}
+          <div class="tooltip">
+            ${mat.h}h | Cor: ${mat.cor.length?mat.cor.join(", "):"—"}
+          </div>
+        `;
+
+        d.onclick=()=>{
+          if(d.classList.contains("locked")) return;
+
+          estado[mat.c]=!estado[mat.c];
+          localStorage.setItem("estadoAdm",JSON.stringify(estado));
+          actualizar();
+        };
+
+        yDiv.appendChild(d);
+
+      });
+
+      box.appendChild(yDiv);
+
+    });
+
+    malla.appendChild(box);
+
   });
-});
+
+}
 
 function actualizar(){
-  const aprobadas = document.querySelectorAll(".materia.aprobada").length;
-  const porcentaje = Math.round((aprobadas/total)*100);
-  porcentajeTxt.textContent = porcentaje + "% carrera completada";
-}
 
-function guardar(){
-  const estado=[];
-  materias.forEach((m,i)=>{
-    estado[i]=m.classList.contains("aprobada");
+  document.querySelectorAll(".subject").forEach(d=>{
+    const c=d.dataset.c;
+    const mat=materias.find(m=>m.c===c);
+
+    if(estado[c]){
+      d.classList.add("approved","unlockAnim");
+      d.classList.remove("locked");
+    }else{
+      if(!cumplidas(mat)){
+        d.classList.add("locked");
+        d.classList.remove("approved");
+      }else{
+        d.classList.remove("locked","approved");
+      }
+    }
   });
-  localStorage.setItem("estadoMaterias",JSON.stringify(estado));
+
+  progreso();
+
 }
 
-function cargar(){
-  const data=JSON.parse(localStorage.getItem("estadoMaterias"));
-  if(!data) return;
-  materias.forEach((m,i)=>{
-    if(data[i]) m.classList.add("aprobada");
-  });
-  actualizar();
-}
+function progreso(){
 
-/* ===== BOTÓN ÚNICO MODO ===== */
-function toggleModo(){
-  if(document.body.classList.contains("pc")){
-    document.body.classList.remove("pc");
-    document.body.classList.add("celular");
-    modoBtn.textContent = "Modo PC";
-  }else{
-    document.body.classList.remove("celular");
-    document.body.classList.add("pc");
-    modoBtn.textContent = "Modo celular";
+  const total=materias.length;
+  const ok=Object.values(estado).filter(v=>v).length;
+  const pct=Math.round(ok/total*100);
+
+  document.getElementById("topCounter").textContent=`${pct}% completado`;
+
+  if(pct%15===0 && pct!==0){
+    const f=document.createElement("div");
+    f.className="flash";
+    f.textContent="¡Progreso!";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1000);
   }
+
 }
 
-cargar();
-</script>
+document.getElementById("resetBtn").onclick=()=>{
+  if(confirm("Se perderán los datos guardados. ¿Continuar?")){
+    localStorage.removeItem("estadoAdm");
+    location.reload();
+  }
+};
 
+document.getElementById("toggleMode").onclick=(e)=>{
+  document.body.classList.toggle("vertical");
+  e.target.textContent=
+    document.body.classList.contains("vertical")
+    ?"Modo horizontal":"Modo vertical";
+};
+
+crear();
+actualizar();
+
+</script>
 </body>
 </html>
