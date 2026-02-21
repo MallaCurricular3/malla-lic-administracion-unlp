@@ -2,339 +2,283 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Malla Lic. Administración UNLP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lic. en Administración - Progreso</title>
 
 <style>
-
-:root{
-  --primary:#540212;
-  --bg:#0e0e11;
-  --card:#1a1a22;
-  --text:#f2f2f2;
+/* ===== FONDO FONDO FONDO (aesthetic difuminado) ===== */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 20% 30%, #540212 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, #2b2b2b 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, #000000 0%, transparent 45%),
+    radial-gradient(circle at 70% 60%, #540212 0%, transparent 35%),
+    #0a0a0a;
+  filter: blur(60px);
 }
 
-/* Fondo aesthetic */
+/* ===== GENERAL ===== */
 body{
   margin:0;
-  font-family:Segoe UI, sans-serif;
-  color:var(--text);
-  background:
-  radial-gradient(circle at 20% 20%, #54021255, transparent 40%),
-  radial-gradient(circle at 80% 30%, #222 0%, transparent 50%),
-  radial-gradient(circle at 50% 80%, #000 0%, transparent 50%),
-  #0b0b0f;
+  font-family:Arial, Helvetica, sans-serif;
+  color:white;
 }
 
-/* Layout */
-
-.container{
+header{
+  padding:15px 20px;
   display:flex;
-  gap:18px;
-  padding:20px;
-  overflow-x:auto;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.mobile .container{
-  flex-direction:column;
-  overflow-x:hidden;
-}
-
-/* Columnas */
-
-.cycle{
-  min-width:260px;
-  background:var(--card);
-  border-radius:14px;
-  padding:12px;
-  box-shadow:0 0 12px #0006;
-}
-
-.cycle h2{
-  text-align:center;
-  margin:6px 0 12px 0;
-}
-
-/* Materias */
-
-.subject{
-  background:#f4f4f4;
-  color:#000;
-  padding:10px;
-  border-radius:8px;
-  margin:8px 0;
-  cursor:pointer;
-  position:relative;
-  transition:.25s;
-  font-weight:600;
-}
-
-.subject:hover{
-  transform:scale(1.04);
-}
-
-.subject.locked{
-  background:#444;
-  color:#aaa;
-  cursor:not-allowed;
-}
-
-.subject.done{
-  background:var(--primary);
-  color:#fff;
-}
-
-/* Código */
-
-.subject small{
-  display:block;
-  font-size:11px;
-  opacity:.7;
-}
-
-/* Tooltip */
-
-.tooltip{
-  position:absolute;
-  bottom:100%;
-  left:0;
-  background:#222;
-  color:#fff;
-  padding:6px;
-  border-radius:6px;
-  font-size:11px;
-  white-space:nowrap;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-}
-
-.subject:hover .tooltip{
-  opacity:1;
-}
-
-/* Porcentaje */
-
-#progressBox{
-  position:fixed;
-  top:12px;
-  right:12px;
-  background:#111;
-  padding:10px 14px;
-  border-radius:10px;
-  box-shadow:0 0 10px #000;
+#porcentaje{
   font-weight:bold;
-}
-
-/* Botones */
-
-.controls{
-  text-align:center;
-  padding:30px;
+  background:#111;
+  padding:8px 14px;
+  border-radius:10px;
+  border:1px solid #540212;
 }
 
 button{
-  background:var(--primary);
+  background:#540212;
   color:white;
   border:none;
-  padding:10px 18px;
+  padding:8px 12px;
   border-radius:8px;
-  margin:6px;
   cursor:pointer;
-  font-weight:600;
 }
 
-button:hover{
-  filter:brightness(1.2);
+.container{
+  padding:20px;
+  display:grid;
+  gap:20px;
 }
 
+/* ===== SECCIONES ===== */
+.section{
+  background:#111;
+  border:1px solid #540212;
+  border-radius:12px;
+  padding:15px;
+}
+
+.section h2{
+  margin-top:0;
+}
+
+/* ===== MATERIAS ===== */
+.materia{
+  background:#1a1a1a;
+  border:1px solid #333;
+  border-radius:10px;
+  padding:10px;
+  margin:6px 0;
+  cursor:pointer;
+  position:relative;
+}
+
+.materia.aprobada{
+  background:#540212;
+  border-color:#540212;
+}
+
+.tooltip{
+  display:none;
+  position:absolute;
+  top:-20px;
+  right:5px;
+  font-size:10px;
+  background:#000;
+  padding:3px 6px;
+  border-radius:5px;
+}
+
+.materia:hover .tooltip{
+  display:block;
+}
+
+/* ===== MODOS ===== */
+.horizontal .container{
+  grid-template-columns:repeat(2,1fr);
+}
+
+.vertical .container{
+  grid-template-columns:1fr;
+}
+
+/* ===== RESET MODAL ===== */
+#resetModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+
+.modalBox{
+  background:#111;
+  border:1px solid #540212;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.modalBox button{
+  margin:5px;
+}
 </style>
 </head>
 
-<body>
+<body class="horizontal">
 
-<h1 style="text-align:center;margin-top:20px">
-Licenciatura en Administración — UNLP
-</h1>
+<header>
+  <div>
+    <button onclick="setModo('horizontal')">Modo PC</button>
+    <button onclick="setModo('vertical')">Modo Celular</button>
+    <button onclick="abrirReset()">Resetear</button>
+  </div>
+  <div id="porcentaje">0% carrera completada</div>
+</header>
 
-<div id="progressBox">0%</div>
+<div class="container" id="malla">
 
-<div id="app" class="container"></div>
+<!-- ===== PROPEDÉUTICO ===== -->
+<div class="section">
+<h2>Ciclo Propedéutico</h2>
 
-<div class="controls">
-<button onclick="toggleMode()" id="modeBtn">Modo vertical</button>
-<button onclick="resetAll()">Resetear malla</button>
+<div class="materia" data-codigo="8.1.0">8.1.0 Introducción a los Estudios Universitarios</div>
+<div class="materia" data-codigo="8.1.2">8.1.2 Introducción a la Economía y Estructura Económica Argentina</div>
+<div class="materia" data-codigo="8.1.3">8.1.3 Administración I</div>
+<div class="materia" data-codigo="8.1.1">8.1.1 Contabilidad I</div>
+
+</div>
+
+<!-- ===== BÁSICO ===== -->
+<div class="section">
+<h2>Ciclo Básico</h2>
+
+<div class="materia">8.1.4 Microeconomía I</div>
+<div class="materia">8.1.5 Matemática para Administradores</div>
+<div class="materia">8.1.6 Comportamiento Humano en las Organizaciones</div>
+<div class="materia">8.1.7 Pensamiento Social y Científico</div>
+
+<div class="materia">8.2.2 Macroeconomía I</div>
+<div class="materia">8.2.1 Interpretación de los Estados Contables</div>
+<div class="materia">8.2.3 Administración Estratégica</div>
+
+<div class="materia">8.2.4 Gestión Pública</div>
+<div class="materia">8.2.5 Estadística Aplicada</div>
+<div class="materia">8.2.6 Costos para la Gestión</div>
+<div class="materia">8.2.7 Elementos del Derecho Público y Privado</div>
+
+</div>
+
+<!-- ===== PROFESIONAL ===== -->
+<div class="section">
+<h2>Ciclo Profesional</h2>
+
+<div class="materia">8.3.1 Marketing Estratégico</div>
+<div class="materia">8.3.2 Diseño de Sistemas de Información</div>
+<div class="materia">8.3.3 Cálculo Financiero</div>
+
+<div class="materia">8.3.4 Gestión de las Personas I</div>
+<div class="materia">8.3.5 Planeamiento y Control Organizacional</div>
+<div class="materia">8.3.6 Operaciones</div>
+
+<div class="materia">8.4.1 Marketing Operativo</div>
+<div class="materia">8.4.2 Estrategia Tecnológica y Gestión de Proyectos IT</div>
+<div class="materia">8.4.3 Finanzas de Empresas</div>
+
+<div class="materia">8.4.6 Gestión de las Personas II</div>
+<div class="materia">8.4.7 Derecho Empresario</div>
+<div class="materia">8.4.8 Dirección General</div>
+
+</div>
+
+<!-- ===== ELECTIVAS ===== -->
+<div class="section">
+<h2>Electivas</h2>
+
+<div class="materia">8.4.4 Finanzas Públicas</div>
+<div class="materia">8.4.5 Psicosociología Organizacional</div>
+<div class="materia">8.4.9 Finanzas Avanzadas</div>
+<div class="materia">8.4.10 Inteligencia de Negocios</div>
+<div class="materia">Optativa</div>
+
+</div>
+
+</div>
+
+<!-- ===== RESET MODAL EN PANTALLA ===== -->
+<div id="resetModal">
+  <div class="modalBox">
+    <p>¿Seguro que querés resetear todo el progreso?</p>
+    <button onclick="confirmReset()">Sí</button>
+    <button onclick="cerrarReset()">Cancelar</button>
+  </div>
 </div>
 
 <script>
+const materias = document.querySelectorAll(".materia");
+const total = materias.length;
+const porcentajeTxt = document.getElementById("porcentaje");
 
-/* ---------- DATOS ---------- */
-
-const subjects=[
-
-/* PROPEDÉUTICO */
-
-{c:"8.1.0",n:"Introducción a los Estudios Universitarios",h:48,cor:[],cycle:"Propedéutico"},
-{c:"8.1.2",n:"Introducción a la Economía y Estructura Económica Argentina",h:64,cor:[],cycle:"Propedéutico"},
-{c:"8.1.3",n:"Administración I",h:128,cor:[],cycle:"Propedéutico"},
-{c:"8.1.1",n:"Contabilidad I",h:128,cor:[],cycle:"Propedéutico"},
-
-/* BÁSICO */
-
-{c:"8.1.4",n:"Microeconomía I",h:96,cor:["8.1.2"],cycle:"Básico"},
-{c:"8.1.5",n:"Matemática para Administradores",h:96,cor:["8.1.2"],cycle:"Básico"},
-{c:"8.1.6",n:"Comportamiento Humano en las Organizaciones",h:64,cor:["8.1.3"],cycle:"Básico"},
-{c:"8.1.7",n:"Pensamiento Social y Científico",h:64,cor:["8.1.3"],cycle:"Básico"},
-
-{c:"8.2.2",n:"Macroeconomía I",h:96,cor:["8.1.2"],cycle:"Básico"},
-{c:"8.2.1",n:"Interpretación de Estados Contables",h:96,cor:["8.1.1"],cycle:"Básico"},
-{c:"8.2.3",n:"Administración Estratégica",h:96,cor:["8.1.3"],cycle:"Básico"},
-
-{c:"8.2.4",n:"Gestión Pública",h:64,cor:["8.1.6"],cycle:"Básico"},
-{c:"8.2.5",n:"Estadística Aplicada",h:96,cor:["8.1.5"],cycle:"Básico"},
-{c:"8.2.6",n:"Costos para la Gestión",h:64,cor:["8.1.3","8.1.5"],cycle:"Básico"},
-{c:"8.2.7",n:"Elementos del Derecho Público y Privado",h:64,cor:["8.1.7"],cycle:"Básico"},
-
-/* PROFESIONAL */
-
-{c:"8.3.1",n:"Marketing Estratégico",h:96,cor:["8.2.3"],cycle:"Profesional"},
-{c:"8.3.2",n:"Diseño de Sistemas de Información",h:96,cor:["8.1.7","8.2.3"],cycle:"Profesional"},
-{c:"8.3.3",n:"Cálculo Financiero",h:96,cor:["8.1.5","8.2.1","8.2.3"],cycle:"Profesional"},
-
-{c:"8.3.4",n:"Gestión de las Personas I",h:96,cor:["8.1.6","8.2.3"],cycle:"Profesional"},
-{c:"8.3.5",n:"Planeamiento y Control Organizacional",h:96,cor:["8.2.1","8.2.3","8.2.6"],cycle:"Profesional"},
-{c:"8.3.6",n:"Operaciones",h:96,cor:["8.2.3","8.2.6"],cycle:"Profesional"},
-
-{c:"8.4.1",n:"Marketing Operativo",h:64,cor:["8.2.5","8.3.1"],cycle:"Profesional"},
-{c:"8.4.2",n:"Estrategia Tecnológica y Gestión IT",h:64,cor:["8.3.2"],cycle:"Profesional"},
-{c:"8.4.3",n:"Finanzas de Empresas",h:96,cor:["8.3.3"],cycle:"Profesional"},
-
-{c:"8.4.6",n:"Gestión de las Personas II",h:64,cor:["8.3.4"],cycle:"Profesional"},
-{c:"8.4.7",n:"Derecho Empresario",h:64,cor:["8.2.7"],cycle:"Profesional"},
-{c:"8.4.8",n:"Dirección General",h:96,cor:["8.2.6","8.3.1","8.3.3","8.3.5"],cycle:"Profesional"},
-
-/* ELECTIVAS */
-
-{c:"8.4.4",n:"Finanzas Públicas",h:48,cor:["8.1.4","8.1.7"],cycle:"Electivas"},
-{c:"8.4.5",n:"Psicosociología Organizacional",h:48,cor:["8.1.6"],cycle:"Electivas"},
-{c:"8.4.9",n:"Finanzas Avanzadas",h:48,cor:["8.4.3"],cycle:"Electivas"},
-{c:"8.4.10",n:"Inteligencia de Negocios",h:48,cor:["8.2.3","8.2.5"],cycle:"Electivas"},
-{c:"OPT",n:"Materia Optativa",h:48,cor:[],cycle:"Electivas"}
-
-];
-
-/* ---------- ESTADO ---------- */
-
-const done=new Set(JSON.parse(localStorage.getItem("done")||"[]"));
-
-function save(){
-localStorage.setItem("done",JSON.stringify([...done]));
-}
-
-/* ---------- RENDER ---------- */
-
-const app=document.getElementById("app");
-
-function unlocked(s){
-return s.cor.every(c=>done.has(c));
-}
-
-function render(){
-
-app.innerHTML="";
-
-const cycles=["Propedéutico","Básico","Profesional","Electivas"];
-
-cycles.forEach(cycle=>{
-
-const col=document.createElement("div");
-col.className="cycle";
-
-col.innerHTML=`<h2>${cycle}</h2>`;
-
-subjects.filter(s=>s.cycle===cycle).forEach(s=>{
-
-const div=document.createElement("div");
-div.className="subject";
-
-if(done.has(s.c)) div.classList.add("done");
-else if(!unlocked(s)) div.classList.add("locked");
-
-div.innerHTML=`
-<small>${s.c}</small>
-${s.n}
-<div class="tooltip">
-${s.h} hs<br>
-Correlativas: ${s.cor.length?s.cor.join(", "):"—"}
-</div>
-`;
-
-div.onclick=()=>{
-
-if(!unlocked(s) && !done.has(s.c)) return;
-
-if(done.has(s.c)) done.delete(s.c);
-else done.add(s.c);
-
-save();
-render();
-};
-
-col.appendChild(div);
-
+materias.forEach(m=>{
+  m.addEventListener("click",()=>{
+    m.classList.toggle("aprobada");
+    guardar();
+    actualizar();
+  });
 });
 
-app.appendChild(col);
-
-});
-
-updateProgress();
+function actualizar(){
+  const aprobadas = document.querySelectorAll(".materia.aprobada").length;
+  const porcentaje = Math.round((aprobadas/total)*100);
+  porcentajeTxt.textContent = porcentaje + "% carrera completada";
 }
 
-/* ---------- PROGRESO ---------- */
-
-function updateProgress(){
-
-const total=subjects.length;
-const percent=Math.round(done.size/total*100);
-
-document.getElementById("progressBox").textContent=percent+"%";
-
+function guardar(){
+  const estado=[];
+  materias.forEach((m,i)=>{
+    estado[i]=m.classList.contains("aprobada");
+  });
+  localStorage.setItem("estadoMaterias",JSON.stringify(estado));
 }
 
-/* ---------- RESET ---------- */
-
-function resetAll(){
-
-const ok=confirm(
-"Se perderán los datos guardados.\n\n¿Deseás resetear la malla?"
-);
-
-if(!ok) return;
-
-done.clear();
-save();
-render();
+function cargar(){
+  const data=JSON.parse(localStorage.getItem("estadoMaterias"));
+  if(!data) return;
+  materias.forEach((m,i)=>{
+    if(data[i]) m.classList.add("aprobada");
+  });
+  actualizar();
 }
 
-/* ---------- MODO ---------- */
-
-let mobile=false;
-
-function toggleMode(){
-
-mobile=!mobile;
-
-document.body.classList.toggle("mobile");
-
-document.getElementById("modeBtn").textContent=
-mobile?"Modo horizontal":"Modo vertical";
-
+function setModo(modo){
+  document.body.className=modo;
 }
 
-/* ---------- INIT ---------- */
+/* ===== RESET ===== */
+function abrirReset(){
+  document.getElementById("resetModal").style.display="flex";
+}
 
-render();
+function cerrarReset(){
+  document.getElementById("resetModal").style.display="none";
+}
 
+function confirmReset(){
+  localStorage.removeItem("estadoMaterias");
+  location.reload();
+}
+
+cargar();
 </script>
 
 </body>
