@@ -8,312 +8,389 @@
 <style>
 :root{
   --primary:#540212;
-  --primary-soft:#7a0a22;
-  --bg:#f7f4f6;
-  --card:#ffffff;
-  --text:#1c1c1c;
-  --locked:#d9d9e6;
-  --approved:#e7c9cf;
-  --border:#e5d6da;
-}
-
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#121012;
-    --card:#1c1719;
-    --text:#f1f1f1;
-    --locked:#3a3033;
-    --approved:#6a2836;
-    --border:#2a2225;
-  }
+  --bg:#0e0e11;
+  --card:#1a1a22;
+  --text:#f2f2f2;
+  --locked:#3a3a44;
+  --accent:#7a0d26;
 }
 
 body{
   margin:0;
-  font-family:system-ui,sans-serif;
+  font-family:Segoe UI, sans-serif;
   background:var(--bg);
   color:var(--text);
 }
 
-header{
-  background:var(--primary);
-  color:white;
+h1{
   text-align:center;
-  padding:16px;
-  font-weight:600;
+  margin:20px 0;
 }
 
 .container{
-  padding:20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  display:flex;
   gap:20px;
+  padding:20px;
+  overflow:auto;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
 .cycle{
   background:var(--card);
-  border:2px solid var(--border);
-  border-radius:14px;
-  padding:14px;
+  border-radius:12px;
+  padding:15px;
+  min-width:280px;
+  box-shadow:0 0 10px rgba(0,0,0,.4);
 }
 
-.cycle-title{
-  font-weight:700;
-  margin-bottom:10px;
-  color:var(--primary);
+.cycle h2{
+  text-align:center;
+  border-bottom:1px solid #444;
+  padding-bottom:5px;
 }
 
-.year-title{
-  font-weight:600;
-  margin:8px 0;
+.year{
+  margin-top:15px;
+}
+
+.year h3{
+  margin:10px 0 5px;
+  color:#bbb;
 }
 
 .subject{
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px;
-  margin-bottom:8px;
-  background:var(--card);
+  background:white;
+  color:black;
+  border-radius:8px;
+  padding:8px;
+  margin:6px 0;
   cursor:pointer;
   position:relative;
-  transition:.25s;
+  transition:.2s;
+  font-size:.9rem;
 }
 
-.subject:hover{
-  transform:scale(1.02);
+.subject small{
+  display:block;
+  font-size:.7rem;
+  opacity:.7;
 }
 
 .subject.locked{
   background:var(--locked);
+  color:#aaa;
   cursor:not-allowed;
-  opacity:.7;
 }
 
 .subject.approved{
-  background:var(--approved);
-  text-decoration:line-through;
-  animation:pop .25s ease;
+  background:var(--primary);
+  color:white;
+  transform:scale(1.03);
+  box-shadow:0 0 10px var(--primary);
 }
 
-@keyframes pop{
-  0%{transform:scale(.9);}
-  100%{transform:scale(1);}
+.subject:hover{
+  transform:scale(1.05);
 }
 
 .tooltip{
   position:absolute;
-  bottom:6px;
-  right:8px;
-  font-size:11px;
-  opacity:.7;
+  top:-5px;
+  right:-5px;
+  background:#111;
+  color:white;
+  font-size:.65rem;
+  padding:4px 6px;
+  border-radius:5px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  white-space:nowrap;
 }
 
-.stars{
-  margin-top:4px;
-  font-size:12px;
-  color:#e0b400;
+.subject:hover .tooltip{
+  opacity:1;
 }
 
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:20px;
+#topCounter{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#111;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:bold;
+  box-shadow:0 0 10px var(--primary);
+}
+
+.buttons{
+  text-align:center;
+  margin:30px 0 10px;
 }
 
 button{
-  padding:10px 14px;
+  background:var(--primary);
   border:none;
+  color:white;
+  padding:10px 18px;
+  margin:5px;
   border-radius:8px;
   cursor:pointer;
-  font-weight:600;
+  font-weight:bold;
 }
 
-.reset{
-  background:#ff5c5c;
-  color:white;
+button:hover{
+  background:var(--accent);
 }
 
-.mode{
-  background:#3aa0ff;
-  color:white;
-}
-
-.vertical-mode .container{
-  grid-template-columns:1fr;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
+#progressCircle{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  border:10px solid #333;
+  margin:20px auto 40px;
   display:flex;
   align-items:center;
   justify-content:center;
-  visibility:hidden;
+  font-size:1.4rem;
+  font-weight:bold;
+  position:relative;
 }
 
-.modal.active{
-  visibility:visible;
+.unlockAnim{
+  animation:pop .4s ease;
 }
 
-.modal-box{
-  background:var(--card);
-  padding:20px;
-  border-radius:12px;
-  max-width:320px;
-  text-align:center;
+@keyframes pop{
+  0%{transform:scale(.7);}
+  100%{transform:scale(1);}
+}
+
+.flash{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  font-size:2rem;
+  color:white;
+  animation:fade 1s ease forwards;
+}
+
+@keyframes fade{
+  0%{opacity:1;}
+  100%{opacity:0;}
+}
+
+.vertical .container{
+  flex-direction:column;
+  align-items:center;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-Licenciatura en Administración — UNLP
-</header>
+<h1>Licenciatura en Administración — UNLP</h1>
 
-<div class="container" id="grid"></div>
+<div id="topCounter">0% completado</div>
 
-<div class="controls">
-  <button class="reset" onclick="confirmReset()">Resetear malla</button>
-  <button class="mode" id="modeBtn" onclick="toggleMode()">Modo vertical</button>
+<div class="container" id="malla"></div>
+
+<div class="buttons">
+  <button id="toggleMode">Modo vertical</button>
+  <button id="resetBtn">Resetear malla</button>
 </div>
 
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <div>Se perderán los datos guardados. ¿Confirmar reseteo?</div>
-    <button onclick="resetMalla()">Sí, resetear</button>
-    <button onclick="closeModal()">Cancelar</button>
-  </div>
-</div>
+<div id="progressCircle">0%</div>
 
 <script>
-const subjects={
 
-IEU:{n:"Introducción a los Estudios Universitarios",h:48,c:"Propedéutico",y:1,req:[]},
-ECON:{n:"Introducción a la Economía",h:64,c:"Propedéutico",y:1,req:[]},
-ADMIN1:{n:"Administración I",h:128,c:"Propedéutico",y:1,req:[]},
-CONTAB1:{n:"Contabilidad I",h:128,c:"Propedéutico",y:1,req:[]},
+const materias = [
 
-MICRO:{n:"Microeconomía I",h:96,c:"Básico",y:1,req:["ECON"]},
-MATE:{n:"Matemática",h:96,c:"Básico",y:1,req:["ECON"]},
-COMPORT:{n:"Comportamiento Organizacional",h:64,c:"Básico",y:1,req:["ADMIN1"]},
+/* PROPEDÉUTICO */
 
-ESTAD:{n:"Estadística",h:96,c:"Básico",y:2,req:["MATE"]},
-COSTOS:{n:"Costos",h:64,c:"Básico",y:2,req:["CONTAB1"]},
-DERECHO:{n:"Derecho",h:64,c:"Básico",y:2,req:["CONTAB1"]},
+{c:"8.1.0",n:"Introducción a los Estudios Universitarios",h:48,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+{c:"8.1.2",n:"Introducción a la Economía y Estructura Económica Argentina",h:64,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+{c:"8.1.3",n:"Administración I",h:128,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
+{c:"8.1.1",n:"Contabilidad I",h:128,cy:"Propedéutico",y:"1° año — 1° semestre",cor:[]},
 
-FIN:{n:"Finanzas",h:96,c:"Profesional",y:3,req:["ESTAD"]},
-MKT:{n:"Marketing",h:96,c:"Profesional",y:3,req:["ADMIN1"]},
-SIST:{n:"Sistemas de Información",h:96,c:"Profesional",y:3,req:["ESTAD"]},
+/* BÁSICO */
 
-DIR:{n:"Dirección General",h:96,c:"Profesional",y:4,req:["FIN"]},
+{c:"8.1.4",n:"Microeconomía I",h:96,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.2"]},
+{c:"8.1.5",n:"Matemática para Administradores",h:96,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.2"]},
+{c:"8.1.6",n:"Comportamiento Humano en las Organizaciones",h:64,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.3"]},
+{c:"8.1.7",n:"Pensamiento Social y Científico",h:64,cy:"Básico",y:"1° año — 2° semestre",cor:["8.1.3"]},
 
-OPT1:{n:"Electiva 1",h:64,c:"Electivas",y:4,req:[]},
-OPT2:{n:"Electiva 2",h:64,c:"Electivas",y:4,req:[]}
+{c:"8.2.2",n:"Macroeconomía I",h:96,cy:"Básico",y:"2° año — 1° semestre",cor:["8.1.2"]},
+{c:"8.2.1",n:"Interpretación de los Estados Contables",h:96,cy:"Básico",y:"2° año — 1° semestre",cor:["8.1.1"]},
+{c:"8.2.3",n:"Administración Estratégica",h:96,cy:"Básico",y:"2° año — 1° semestre",cor:["8.1.3"]},
 
+{c:"8.2.4",n:"Gestión Pública",h:64,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.6"]},
+{c:"8.2.5",n:"Estadística Aplicada",h:96,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.5"]},
+{c:"8.2.6",n:"Costos para la Gestión",h:64,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.3","8.1.5"]},
+{c:"8.2.7",n:"Elementos del Derecho Público y Privado",h:64,cy:"Básico",y:"2° año — 2° semestre",cor:["8.1.7"]},
+
+/* PROFESIONAL */
+
+{c:"8.3.1",n:"Marketing Estratégico",h:96,cy:"Profesional",y:"3° año — 1° semestre",cor:["8.2.3"]},
+{c:"8.3.2",n:"Diseño de Sistemas de Información",h:96,cy:"Profesional",y:"3° año — 1° semestre",cor:["8.1.7","8.2.3"]},
+{c:"8.3.3",n:"Cálculo Financiero",h:96,cy:"Profesional",y:"3° año — 1° semestre",cor:["8.1.5","8.2.1","8.2.3"]},
+
+{c:"8.3.4",n:"Gestión de las Personas I",h:96,cy:"Profesional",y:"3° año — 2° semestre",cor:["8.1.6","8.2.3"]},
+{c:"8.3.5",n:"Planeamiento y Control Organizacional",h:96,cy:"Profesional",y:"3° año — 2° semestre",cor:["8.2.1","8.2.3","8.2.6"]},
+{c:"8.3.6",n:"Operaciones",h:96,cy:"Profesional",y:"3° año — 2° semestre",cor:["8.2.3","8.2.6"]},
+
+{c:"8.4.1",n:"Marketing Operativo",h:64,cy:"Profesional",y:"4° año — 1° semestre",cor:["8.2.5","8.3.1"]},
+{c:"8.4.2",n:"Estrategia Tecnológica y Gestión de Proyectos IT",h:64,cy:"Profesional",y:"4° año — 1° semestre",cor:["8.3.2"]},
+{c:"8.4.3",n:"Finanzas de Empresas",h:96,cy:"Profesional",y:"4° año — 1° semestre",cor:["8.3.3"]},
+
+{c:"8.4.6",n:"Gestión de las Personas II",h:64,cy:"Profesional",y:"4° año — 2° semestre",cor:["8.3.4"]},
+{c:"8.4.7",n:"Derecho Empresario",h:64,cy:"Profesional",y:"4° año — 2° semestre",cor:["8.2.7"]},
+{c:"8.4.8",n:"Dirección General",h:96,cy:"Profesional",y:"4° año — 2° semestre",cor:["8.2.6","8.3.1","8.3.3","8.3.5"]},
+
+/* ELECTIVAS */
+
+{c:"8.4.4",n:"Finanzas Públicas",h:48,cy:"Electivas",y:"Electiva",cor:["8.1.4","8.1.7"]},
+{c:"8.4.5",n:"Psicosociología Organizacional",h:48,cy:"Electivas",y:"Electiva",cor:["8.1.6"]},
+{c:"8.4.9",n:"Finanzas Avanzadas",h:48,cy:"Electivas",y:"Electiva",cor:["8.4.3"]},
+{c:"8.4.10",n:"Inteligencia de Negocios y Datos",h:48,cy:"Electivas",y:"Electiva",cor:["8.2.3","8.2.5"]},
+{c:"OPT",n:"Materia Optativa",h:48,cy:"Electivas",y:"Electiva",cor:[]}
+
+];
+
+const estado = JSON.parse(localStorage.getItem("estadoAdm")||"{}");
+const malla = document.getElementById("malla");
+
+function cumplidas(m){
+  return m.cor.every(c=>estado[c]);
+}
+
+function crear(){
+
+  malla.innerHTML="";
+
+  const ciclos = [...new Set(materias.map(m=>m.cy))];
+
+  ciclos.forEach(ciclo=>{
+
+    const box=document.createElement("div");
+    box.className="cycle";
+    box.innerHTML=`<h2>${ciclo}</h2>`;
+
+    const years=[...new Set(materias.filter(m=>m.cy===ciclo).map(m=>m.y))];
+
+    years.forEach(y=>{
+      const yDiv=document.createElement("div");
+      yDiv.className="year";
+      yDiv.innerHTML=`<h3>${y}</h3>`;
+
+      materias.filter(m=>m.cy===ciclo && m.y===y)
+      .forEach(mat=>{
+
+        const d=document.createElement("div");
+        d.className="subject";
+        d.dataset.c=mat.c;
+
+        if(estado[mat.c]) d.classList.add("approved");
+        else if(!cumplidas(mat)) d.classList.add("locked");
+
+        const faltan=mat.cor.filter(c=>!estado[c]);
+
+        d.innerHTML=`
+          <small>${mat.c}</small>
+          ${mat.n}
+          <div class="tooltip">
+            ${mat.h}h | Cor: ${mat.cor.length?mat.cor.join(", "):"—"}
+          </div>
+        `;
+
+        d.onclick=()=>{
+          if(d.classList.contains("locked")) return;
+
+          estado[mat.c]=!estado[mat.c];
+          localStorage.setItem("estadoAdm",JSON.stringify(estado));
+          actualizar();
+        };
+
+        yDiv.appendChild(d);
+
+      });
+
+      box.appendChild(yDiv);
+
+    });
+
+    malla.appendChild(box);
+
+  });
+
+}
+
+function actualizar(){
+
+  document.querySelectorAll(".subject").forEach(d=>{
+    const c=d.dataset.c;
+    const mat=materias.find(m=>m.c===c);
+
+    if(estado[c]){
+      d.classList.add("approved","unlockAnim");
+      d.classList.remove("locked");
+    }else{
+      if(!cumplidas(mat)){
+        d.classList.add("locked");
+        d.classList.remove("approved");
+      }else{
+        d.classList.remove("locked","approved");
+      }
+    }
+  });
+
+  progreso();
+
+}
+
+function progreso(){
+
+  const total=materias.length;
+  const ok=Object.values(estado).filter(v=>v).length;
+  const pct=Math.round(ok/total*100);
+
+  document.getElementById("topCounter").textContent=`${pct}% completado`;
+
+  const circle=document.getElementById("progressCircle");
+  circle.textContent=`${pct}%`;
+  circle.style.borderColor=`conic-gradient(var(--primary) ${pct*3.6}deg,#333 0deg)`;
+
+  if(pct%15===0 && pct!==0){
+    const f=document.createElement("div");
+    f.className="flash";
+    f.textContent="¡Progreso!";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1000);
+  }
+
+}
+
+document.getElementById("resetBtn").onclick=()=>{
+  if(confirm("Se perderán los datos guardados. ¿Continuar?")){
+    localStorage.removeItem("estadoAdm");
+    location.reload();
+  }
 };
 
-let approved=JSON.parse(localStorage.getItem("approved")||"[]");
+document.getElementById("toggleMode").onclick=(e)=>{
+  document.body.classList.toggle("vertical");
+  e.target.textContent=
+    document.body.classList.contains("vertical")
+    ?"Modo horizontal":"Modo vertical";
+};
 
-function save(){
-localStorage.setItem("approved",JSON.stringify(approved));
-}
+crear();
+actualizar();
 
-function canUnlock(id){
-return subjects[id].req.every(r=>approved.includes(r));
-}
-
-function stars(id){
-const req=subjects[id].req.length;
-const ok=subjects[id].req.filter(r=>approved.includes(r)).length;
-return "★".repeat(ok)+"☆".repeat(req-ok);
-}
-
-function toggle(id){
-if(!canUnlock(id)&&!approved.includes(id))return;
-
-if(approved.includes(id)){
-approved=approved.filter(x=>x!==id);
-}else{
-approved.push(id);
-}
-save();
-render();
-}
-
-function render(){
-
-const grid=document.getElementById("grid");
-grid.innerHTML="";
-
-const cycles=["Propedéutico","Básico","Profesional","Electivas"];
-
-cycles.forEach(cycle=>{
-
-const div=document.createElement("div");
-div.className="cycle";
-
-div.innerHTML=`<div class="cycle-title">${cycle}</div>`;
-
-Object.entries(subjects).forEach(([id,s])=>{
-
-if(s.c===cycle){
-
-const card=document.createElement("div");
-card.className="subject";
-card.onclick=()=>toggle(id);
-
-if(!canUnlock(id)&&!approved.includes(id))card.classList.add("locked");
-if(approved.includes(id))card.classList.add("approved");
-
-card.innerHTML=`
-${s.n}
-<div class="tooltip">${s.h} hs</div>
-<div class="stars">${stars(id)}</div>
-`;
-
-div.appendChild(card);
-
-}
-
-});
-
-grid.appendChild(div);
-
-});
-
-}
-
-function toggleMode(){
-document.body.classList.toggle("vertical-mode");
-const btn=document.getElementById("modeBtn");
-
-if(document.body.classList.contains("vertical-mode")){
-btn.textContent="Modo horizontal";
-}else{
-btn.textContent="Modo vertical";
-}
-}
-
-function confirmReset(){
-document.getElementById("modal").classList.add("active");
-}
-
-function closeModal(){
-document.getElementById("modal").classList.remove("active");
-}
-
-function resetMalla(){
-approved=[];
-save();
-closeModal();
-render();
-}
-
-render();
 </script>
-
 </body>
 </html>
