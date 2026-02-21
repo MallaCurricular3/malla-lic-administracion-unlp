@@ -7,115 +7,76 @@
 
 <style>
 :root{
-  --bg:#f6f4fb;
+  --primary:#540212;
+  --primary-soft:#7a0a22;
+  --bg:#f7f4f6;
   --card:#ffffff;
-  --primary:#6b5cff;
-  --primary-dark:#5748d6;
   --text:#1c1c1c;
   --locked:#d9d9e6;
-  --approved:#b9b3ff;
-  --border:#dcdaf7;
+  --approved:#e7c9cf;
+  --border:#e5d6da;
 }
 
 @media (prefers-color-scheme: dark){
   :root{
-    --bg:#121218;
-    --card:#1b1b25;
+    --bg:#121012;
+    --card:#1c1719;
     --text:#f1f1f1;
-    --locked:#3a3a4d;
-    --approved:#5c54c9;
-    --border:#2a2a3a;
+    --locked:#3a3033;
+    --approved:#6a2836;
+    --border:#2a2225;
   }
 }
 
 body{
   margin:0;
-  font-family:system-ui, sans-serif;
+  font-family:system-ui,sans-serif;
   background:var(--bg);
   color:var(--text);
 }
 
 header{
-  padding:16px;
-  text-align:center;
   background:var(--primary);
   color:white;
+  text-align:center;
+  padding:16px;
   font-weight:600;
-}
-
-.controls{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  padding:14px;
-  flex-wrap:wrap;
-}
-
-button{
-  padding:10px 14px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:600;
-}
-
-.reset{
-  background:#ff5c5c;
-  color:white;
-}
-
-.vertical{
-  background:#3aa0ff;
-  color:white;
 }
 
 .container{
   padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:30px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
 }
 
 .cycle{
+  background:var(--card);
   border:2px solid var(--border);
   border-radius:14px;
-  padding:16px;
-  background:var(--card);
+  padding:14px;
 }
 
 .cycle-title{
   font-weight:700;
-  margin-bottom:12px;
-  font-size:18px;
-}
-
-.year{
-  margin-bottom:16px;
+  margin-bottom:10px;
+  color:var(--primary);
 }
 
 .year-title{
   font-weight:600;
-  margin:10px 0;
-}
-
-.semesters{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:12px;
-}
-
-.vertical-mode .semesters{
-  grid-template-columns:1fr;
+  margin:8px 0;
 }
 
 .subject{
   border:1px solid var(--border);
   border-radius:10px;
   padding:10px;
+  margin-bottom:8px;
   background:var(--card);
   cursor:pointer;
   position:relative;
-  transition:.2s;
+  transition:.25s;
 }
 
 .subject:hover{
@@ -131,6 +92,12 @@ button{
 .subject.approved{
   background:var(--approved);
   text-decoration:line-through;
+  animation:pop .25s ease;
+}
+
+@keyframes pop{
+  0%{transform:scale(.9);}
+  100%{transform:scale(1);}
 }
 
 .tooltip{
@@ -139,6 +106,41 @@ button{
   right:8px;
   font-size:11px;
   opacity:.7;
+}
+
+.stars{
+  margin-top:4px;
+  font-size:12px;
+  color:#e0b400;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:20px;
+}
+
+button{
+  padding:10px 14px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.reset{
+  background:#ff5c5c;
+  color:white;
+}
+
+.mode{
+  background:#3aa0ff;
+  color:white;
+}
+
+.vertical-mode .container{
+  grid-template-columns:1fr;
 }
 
 .modal{
@@ -162,10 +164,6 @@ button{
   max-width:320px;
   text-align:center;
 }
-
-.modal-box button{
-  margin-top:12px;
-}
 </style>
 </head>
 
@@ -175,12 +173,12 @@ button{
 Licenciatura en Administración — UNLP
 </header>
 
+<div class="container" id="grid"></div>
+
 <div class="controls">
   <button class="reset" onclick="confirmReset()">Resetear malla</button>
-  <button class="vertical" onclick="toggleVertical()">Modo vertical</button>
+  <button class="mode" id="modeBtn" onclick="toggleMode()">Modo vertical</button>
 </div>
-
-<div class="container" id="grid"></div>
 
 <div class="modal" id="modal">
   <div class="modal-box">
@@ -191,140 +189,127 @@ Licenciatura en Administración — UNLP
 </div>
 
 <script>
-const subjects = {
+const subjects={
 
-  // PROPEDÉUTICO
-  IEU:{name:"Introducción a los Estudios Universitarios",hours:48,cycle:"Propedéutico",year:1,sem:1,req:[]},
-  ECON:{name:"Introducción a la Economía y Estructura Económica Argentina",hours:64,cycle:"Propedéutico",year:1,sem:1,req:[]},
-  ADMIN1:{name:"Administración I",hours:128,cycle:"Propedéutico",year:1,sem:1,req:[]},
-  CONTAB1:{name:"Contabilidad I",hours:128,cycle:"Propedéutico",year:1,sem:1,req:[]},
+IEU:{n:"Introducción a los Estudios Universitarios",h:48,c:"Propedéutico",y:1,req:[]},
+ECON:{n:"Introducción a la Economía",h:64,c:"Propedéutico",y:1,req:[]},
+ADMIN1:{n:"Administración I",h:128,c:"Propedéutico",y:1,req:[]},
+CONTAB1:{n:"Contabilidad I",h:128,c:"Propedéutico",y:1,req:[]},
 
-  // BÁSICO
-  MICRO:{name:"Microeconomía I",hours:96,cycle:"Básico",year:1,sem:2,req:["ECON"]},
-  MATE:{name:"Matemática para Administradores",hours:96,cycle:"Básico",year:1,sem:2,req:["ECON"]},
-  COMPORT:{name:"Comportamiento Humano en las Organizaciones",hours:64,cycle:"Básico",year:1,sem:2,req:["ADMIN1"]},
-  PENSAMIENTO:{name:"Pensamiento Social y Científico",hours:64,cycle:"Básico",year:1,sem:2,req:["CONTAB1"]},
-  MACRO:{name:"Macroeconomía I",hours:96,cycle:"Básico",year:2,sem:1,req:["ECON"]},
-  ESTADOS:{name:"Interpretación de Estados Contables",hours:96,cycle:"Básico",year:2,sem:1,req:["CONTAB1"]},
-  ESTRAT:{name:"Administración Estratégica",hours:96,cycle:"Básico",year:2,sem:1,req:["ADMIN1"]},
-  PUB:{name:"Gestión Pública",hours:64,cycle:"Básico",year:2,sem:2,req:["ADMIN1"]},
-  ESTAD:{name:"Estadística Aplicada",hours:96,cycle:"Básico",year:2,sem:2,req:["MATE"]},
-  COSTOS:{name:"Costos para la Gestión",hours:64,cycle:"Básico",year:2,sem:2,req:["CONTAB1","MATE"]},
-  DERECHO:{name:"Elementos del Derecho Público y Privado",hours:64,cycle:"Básico",year:2,sem:2,req:["CONTAB1"]},
+MICRO:{n:"Microeconomía I",h:96,c:"Básico",y:1,req:["ECON"]},
+MATE:{n:"Matemática",h:96,c:"Básico",y:1,req:["ECON"]},
+COMPORT:{n:"Comportamiento Organizacional",h:64,c:"Básico",y:1,req:["ADMIN1"]},
 
-  // PROFESIONAL
-  MKT:{name:"Marketing Estratégico",hours:96,cycle:"Profesional",year:3,sem:1,req:["ESTRAT"]},
-  SIST:{name:"Diseño de Sistemas de Información",hours:96,cycle:"Profesional",year:3,sem:1,req:["ESTAD"]},
-  FIN:{name:"Cálculo Financiero",hours:96,cycle:"Profesional",year:3,sem:1,req:["MATE","ESTADOS","ESTRAT"]},
-  GEST1:{name:"Gestión de las Personas I",hours:96,cycle:"Profesional",year:3,sem:2,req:["COMPORT"]},
-  PLAN:{name:"Planeamiento y Control Organizacional",hours:96,cycle:"Profesional",year:3,sem:2,req:["ESTRAT"]},
-  OP:{name:"Operaciones",hours:96,cycle:"Profesional",year:3,sem:2,req:["ESTAD","COSTOS"]},
+ESTAD:{n:"Estadística",h:96,c:"Básico",y:2,req:["MATE"]},
+COSTOS:{n:"Costos",h:64,c:"Básico",y:2,req:["CONTAB1"]},
+DERECHO:{n:"Derecho",h:64,c:"Básico",y:2,req:["CONTAB1"]},
 
-  MKTOP:{name:"Marketing Operativo",hours:64,cycle:"Profesional",year:4,sem:1,req:["MKT"]},
-  PROY:{name:"Estrategia Tecnológica y Gestión de Proyectos IT",hours:64,cycle:"Profesional",year:4,sem:1,req:["SIST"]},
-  FINEMP:{name:"Finanzas de Empresas",hours:96,cycle:"Profesional",year:4,sem:1,req:["FIN"]},
-  FINPUB:{name:"Finanzas Públicas",hours:48,cycle:"Profesional",year:4,sem:1,req:["CONTAB1","DERECHO"]},
-  PSICO:{name:"Psicosociología Organizacional",hours:48,cycle:"Profesional",year:4,sem:1,req:["GEST1"]},
-  GEST2:{name:"Gestión de las Personas II",hours:64,cycle:"Profesional",year:4,sem:2,req:["GEST1"]},
-  DEREMP:{name:"Derecho Empresario",hours:64,cycle:"Profesional",year:4,sem:2,req:["DERECHO"]},
-  DIR:{name:"Dirección General",hours:96,cycle:"Profesional",year:4,sem:2,req:["PLAN","FINEMP"]},
-  FINAV:{name:"Finanzas Avanzadas",hours:48,cycle:"Profesional",year:4,sem:2,req:["FINEMP"]},
-  INTEL:{name:"Inteligencia de Negocios y Análisis de Datos",hours:48,cycle:"Profesional",year:4,sem:2,req:["ESTAD","COSTOS"]},
+FIN:{n:"Finanzas",h:96,c:"Profesional",y:3,req:["ESTAD"]},
+MKT:{n:"Marketing",h:96,c:"Profesional",y:3,req:["ADMIN1"]},
+SIST:{n:"Sistemas de Información",h:96,c:"Profesional",y:3,req:["ESTAD"]},
+
+DIR:{n:"Dirección General",h:96,c:"Profesional",y:4,req:["FIN"]},
+
+OPT1:{n:"Electiva 1",h:64,c:"Electivas",y:4,req:[]},
+OPT2:{n:"Electiva 2",h:64,c:"Electivas",y:4,req:[]}
+
 };
 
-let approved = JSON.parse(localStorage.getItem("approved") || "[]");
+let approved=JSON.parse(localStorage.getItem("approved")||"[]");
 
 function save(){
-  localStorage.setItem("approved",JSON.stringify(approved));
+localStorage.setItem("approved",JSON.stringify(approved));
 }
 
 function canUnlock(id){
-  return subjects[id].req.every(r=>approved.includes(r));
+return subjects[id].req.every(r=>approved.includes(r));
+}
+
+function stars(id){
+const req=subjects[id].req.length;
+const ok=subjects[id].req.filter(r=>approved.includes(r)).length;
+return "★".repeat(ok)+"☆".repeat(req-ok);
 }
 
 function toggle(id){
-  if(!canUnlock(id) && !approved.includes(id)) return;
+if(!canUnlock(id)&&!approved.includes(id))return;
 
-  if(approved.includes(id)){
-    approved = approved.filter(x=>x!==id);
-  }else{
-    approved.push(id);
-  }
-  save();
-  render();
+if(approved.includes(id)){
+approved=approved.filter(x=>x!==id);
+}else{
+approved.push(id);
+}
+save();
+render();
 }
 
 function render(){
-  const grid = document.getElementById("grid");
-  grid.innerHTML="";
 
-  const cycles = ["Propedéutico","Básico","Profesional"];
+const grid=document.getElementById("grid");
+grid.innerHTML="";
 
-  cycles.forEach(cycle=>{
-    const div = document.createElement("div");
-    div.className="cycle";
+const cycles=["Propedéutico","Básico","Profesional","Electivas"];
 
-    const title=document.createElement("div");
-    title.className="cycle-title";
-    title.textContent=cycle;
-    div.appendChild(title);
+cycles.forEach(cycle=>{
 
-    for(let y=1;y<=4;y++){
-      const yearDiv=document.createElement("div");
-      yearDiv.className="year";
+const div=document.createElement("div");
+div.className="cycle";
 
-      const yearTitle=document.createElement("div");
-      yearTitle.className="year-title";
-      yearTitle.textContent=`Año ${y}`;
-      yearDiv.appendChild(yearTitle);
+div.innerHTML=`<div class="cycle-title">${cycle}</div>`;
 
-      const semDiv=document.createElement("div");
-      semDiv.className="semesters";
+Object.entries(subjects).forEach(([id,s])=>{
 
-      Object.entries(subjects).forEach(([id,s])=>{
-        if(s.cycle===cycle && s.year===y){
-          const card=document.createElement("div");
-          card.className="subject";
-          card.onclick=()=>toggle(id);
+if(s.c===cycle){
 
-          if(!canUnlock(id) && !approved.includes(id)) card.classList.add("locked");
-          if(approved.includes(id)) card.classList.add("approved");
+const card=document.createElement("div");
+card.className="subject";
+card.onclick=()=>toggle(id);
 
-          card.innerHTML=`${s.name}
-            <div class="tooltip">${s.hours} hs</div>
-          `;
+if(!canUnlock(id)&&!approved.includes(id))card.classList.add("locked");
+if(approved.includes(id))card.classList.add("approved");
 
-          semDiv.appendChild(card);
-        }
-      });
+card.innerHTML=`
+${s.n}
+<div class="tooltip">${s.h} hs</div>
+<div class="stars">${stars(id)}</div>
+`;
 
-      if(semDiv.children.length){
-        yearDiv.appendChild(semDiv);
-        div.appendChild(yearDiv);
-      }
-    }
+div.appendChild(card);
 
-    grid.appendChild(div);
-  });
+}
+
+});
+
+grid.appendChild(div);
+
+});
+
+}
+
+function toggleMode(){
+document.body.classList.toggle("vertical-mode");
+const btn=document.getElementById("modeBtn");
+
+if(document.body.classList.contains("vertical-mode")){
+btn.textContent="Modo horizontal";
+}else{
+btn.textContent="Modo vertical";
+}
 }
 
 function confirmReset(){
-  document.getElementById("modal").classList.add("active");
+document.getElementById("modal").classList.add("active");
 }
 
 function closeModal(){
-  document.getElementById("modal").classList.remove("active");
+document.getElementById("modal").classList.remove("active");
 }
 
 function resetMalla(){
-  approved=[];
-  save();
-  closeModal();
-  render();
-}
-
-function toggleVertical(){
-  document.body.classList.toggle("vertical-mode");
+approved=[];
+save();
+closeModal();
+render();
 }
 
 render();
