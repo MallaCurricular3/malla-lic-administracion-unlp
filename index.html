@@ -2,150 +2,149 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Malla Licenciatura en Administración</title>
+<title>Malla Lic. Administración UNLP</title>
 
 <style>
+
 :root{
-  --main:#540212;
-  --bg:#0e0e0e;
-  --card:#1b1b1b;
+  --primary:#540212;
+  --bg:#0e0e11;
+  --card:#1a1a22;
   --text:#f2f2f2;
 }
 
+/* Fondo aesthetic */
 body{
   margin:0;
-  font-family:Arial, Helvetica, sans-serif;
+  font-family:Segoe UI, sans-serif;
   color:var(--text);
-  background:#000;
-  position:relative;
-  overflow-x:hidden;
-}
-
-/* Fondo aesthetic */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
   background:
-    radial-gradient(circle at 20% 30%, #540212aa, transparent 40%),
-    radial-gradient(circle at 80% 70%, #333333aa, transparent 40%),
-    radial-gradient(circle at 50% 50%, #000000aa, transparent 60%);
-  filter: blur(70px);
-  transform: scale(1.3);
-}
-
-/* Header */
-header{
-  position:sticky;
-  top:0;
-  background:#000000aa;
-  backdrop-filter:blur(6px);
-  padding:10px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  z-index:10;
-}
-
-#progressText{
-  font-weight:bold;
+  radial-gradient(circle at 20% 20%, #54021255, transparent 40%),
+  radial-gradient(circle at 80% 30%, #222 0%, transparent 50%),
+  radial-gradient(circle at 50% 80%, #000 0%, transparent 50%),
+  #0b0b0f;
 }
 
 /* Layout */
+
 .container{
   display:flex;
-  flex-wrap:wrap;
-  gap:20px;
+  gap:18px;
   padding:20px;
+  overflow-x:auto;
 }
 
-.section{
-  flex:1;
-  min-width:280px;
+.mobile .container{
+  flex-direction:column;
+  overflow-x:hidden;
 }
 
-.section h2{
+/* Columnas */
+
+.cycle{
+  min-width:260px;
+  background:var(--card);
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 0 12px #0006;
+}
+
+.cycle h2{
   text-align:center;
+  margin:6px 0 12px 0;
 }
 
 /* Materias */
+
 .subject{
-  background:var(--card);
-  border-left:4px solid var(--main);
+  background:#f4f4f4;
+  color:#000;
   padding:10px;
-  margin:8px 0;
   border-radius:8px;
+  margin:8px 0;
   cursor:pointer;
   position:relative;
-  transition:0.25s;
+  transition:.25s;
+  font-weight:600;
 }
 
 .subject:hover{
-  transform:scale(1.03);
+  transform:scale(1.04);
 }
 
 .subject.locked{
-  opacity:0.4;
+  background:#444;
+  color:#aaa;
   cursor:not-allowed;
 }
 
-/* APROBADA VINOTINTO */
-.subject.completed{
-  background:var(--main);
+.subject.done{
+  background:var(--primary);
+  color:#fff;
 }
 
-/* Tooltip correlativas */
+/* Código */
+
+.subject small{
+  display:block;
+  font-size:11px;
+  opacity:.7;
+}
+
+/* Tooltip */
+
 .tooltip{
   position:absolute;
-  top:-5px;
-  right:-5px;
-  background:#000;
-  padding:5px 8px;
-  font-size:11px;
+  bottom:100%;
+  left:0;
+  background:#222;
+  color:#fff;
+  padding:6px;
   border-radius:6px;
-  display:none;
+  font-size:11px;
   white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
 }
 
 .subject:hover .tooltip{
-  display:block;
+  opacity:1;
+}
+
+/* Porcentaje */
+
+#progressBox{
+  position:fixed;
+  top:12px;
+  right:12px;
+  background:#111;
+  padding:10px 14px;
+  border-radius:10px;
+  box-shadow:0 0 10px #000;
+  font-weight:bold;
 }
 
 /* Botones */
+
 .controls{
   text-align:center;
-  margin:30px 0;
+  padding:30px;
 }
 
 button{
-  background:var(--main);
-  border:none;
+  background:var(--primary);
   color:white;
+  border:none;
   padding:10px 18px;
   border-radius:8px;
+  margin:6px;
   cursor:pointer;
-  margin:5px;
+  font-weight:600;
 }
 
 button:hover{
-  opacity:0.8;
-}
-
-/* Animación */
-@keyframes unlock{
-  0%{transform:scale(0.8);opacity:0}
-  100%{transform:scale(1);opacity:1}
-}
-
-.subject.completed{
-  animation:unlock 0.3s ease;
-}
-
-/* ===== MODO VERTICAL (tipo celular) ===== */
-.vertical .container{
-  flex-direction:column;
+  filter:brightness(1.2);
 }
 
 </style>
@@ -153,176 +152,188 @@ button:hover{
 
 <body>
 
-<header>
-  <div>Licenciatura en Administración</div>
-  <div id="progressText">0% completado</div>
-</header>
+<h1 style="text-align:center;margin-top:20px">
+Licenciatura en Administración — UNLP
+</h1>
 
-<div class="container">
+<div id="progressBox">0%</div>
 
-  <div class="section">
-    <h2>Propedéutico</h2>
-    <div id="propedeutico"></div>
-  </div>
-
-  <div class="section">
-    <h2>Básico</h2>
-    <div id="basico"></div>
-  </div>
-
-  <div class="section">
-    <h2>Profesional</h2>
-    <div id="profesional"></div>
-  </div>
-
-  <div class="section">
-    <h2>Electivas</h2>
-    <div id="electivas"></div>
-  </div>
-
-</div>
+<div id="app" class="container"></div>
 
 <div class="controls">
-  <button onclick="toggleMode()" id="modeBtn">Modo vertical</button>
-  <button onclick="resetAll()">Resetear</button>
+<button onclick="toggleMode()" id="modeBtn">Modo vertical</button>
+<button onclick="resetAll()">Resetear malla</button>
 </div>
 
 <script>
 
-/* ===== PLAN COMPLETO ===== */
-const subjects = [
+/* ---------- DATOS ---------- */
 
-{code:"8.1.0",name:"Introducción a los Estudios Universitarios",cycle:"propedeutico",cor:[]},
-{code:"8.1.2",name:"Introducción a la Economía y Estructura Económica Argentina",cycle:"propedeutico",cor:[]},
-{code:"8.1.3",name:"Administración I",cycle:"propedeutico",cor:[]},
-{code:"8.1.1",name:"Contabilidad I",cycle:"propedeutico",cor:[]},
+const subjects=[
 
-{code:"8.1.4",name:"Microeconomía I",cycle:"basico",cor:["8.1.2"]},
-{code:"8.1.5",name:"Matemática para Administradores",cycle:"basico",cor:["8.1.2"]},
-{code:"8.1.6",name:"Comportamiento Humano en las Organizaciones",cycle:"basico",cor:["8.1.3"]},
-{code:"8.1.7",name:"Pensamiento Social y Científico",cycle:"basico",cor:["8.1.3"]},
+/* PROPEDÉUTICO */
 
-{code:"8.2.2",name:"Macroeconomía I",cycle:"basico",cor:["8.1.2"]},
-{code:"8.2.1",name:"Interpretación de los Estados Contables",cycle:"basico",cor:["8.1.1"]},
-{code:"8.2.3",name:"Administración Estratégica",cycle:"basico",cor:["8.1.3"]},
+{c:"8.1.0",n:"Introducción a los Estudios Universitarios",h:48,cor:[],cycle:"Propedéutico"},
+{c:"8.1.2",n:"Introducción a la Economía y Estructura Económica Argentina",h:64,cor:[],cycle:"Propedéutico"},
+{c:"8.1.3",n:"Administración I",h:128,cor:[],cycle:"Propedéutico"},
+{c:"8.1.1",n:"Contabilidad I",h:128,cor:[],cycle:"Propedéutico"},
 
-{code:"8.2.4",name:"Gestión Pública",cycle:"basico",cor:["8.1.6"]},
-{code:"8.2.5",name:"Estadística Aplicada",cycle:"basico",cor:["8.1.5"]},
-{code:"8.2.6",name:"Costos para la Gestión",cycle:"basico",cor:["8.1.3","8.1.5"]},
-{code:"8.2.7",name:"Elementos del Derecho Público y Privado",cycle:"basico",cor:["8.1.7"]},
+/* BÁSICO */
 
-{code:"8.3.1",name:"Marketing Estratégico",cycle:"profesional",cor:["8.2.3"]},
-{code:"8.3.2",name:"Diseño de Sistemas de Información",cycle:"profesional",cor:["8.1.7","8.2.3"]},
-{code:"8.3.3",name:"Cálculo Financiero",cycle:"profesional",cor:["8.1.5","8.2.1","8.2.3"]},
+{c:"8.1.4",n:"Microeconomía I",h:96,cor:["8.1.2"],cycle:"Básico"},
+{c:"8.1.5",n:"Matemática para Administradores",h:96,cor:["8.1.2"],cycle:"Básico"},
+{c:"8.1.6",n:"Comportamiento Humano en las Organizaciones",h:64,cor:["8.1.3"],cycle:"Básico"},
+{c:"8.1.7",n:"Pensamiento Social y Científico",h:64,cor:["8.1.3"],cycle:"Básico"},
 
-{code:"8.3.4",name:"Gestión de las Personas I",cycle:"profesional",cor:["8.1.6","8.2.3"]},
-{code:"8.3.5",name:"Planeamiento y Control Organizacional",cycle:"profesional",cor:["8.2.1","8.2.3","8.2.6"]},
-{code:"8.3.6",name:"Operaciones",cycle:"profesional",cor:["8.2.3","8.2.6"]},
+{c:"8.2.2",n:"Macroeconomía I",h:96,cor:["8.1.2"],cycle:"Básico"},
+{c:"8.2.1",n:"Interpretación de Estados Contables",h:96,cor:["8.1.1"],cycle:"Básico"},
+{c:"8.2.3",n:"Administración Estratégica",h:96,cor:["8.1.3"],cycle:"Básico"},
 
-{code:"8.4.1",name:"Marketing Operativo",cycle:"profesional",cor:["8.2.5","8.3.1"]},
-{code:"8.4.2",name:"Estrategia Tecnológica y Gestión de Proyectos IT",cycle:"profesional",cor:["8.3.2"]},
-{code:"8.4.3",name:"Finanzas de Empresas",cycle:"profesional",cor:["8.3.3"]},
+{c:"8.2.4",n:"Gestión Pública",h:64,cor:["8.1.6"],cycle:"Básico"},
+{c:"8.2.5",n:"Estadística Aplicada",h:96,cor:["8.1.5"],cycle:"Básico"},
+{c:"8.2.6",n:"Costos para la Gestión",h:64,cor:["8.1.3","8.1.5"],cycle:"Básico"},
+{c:"8.2.7",n:"Elementos del Derecho Público y Privado",h:64,cor:["8.1.7"],cycle:"Básico"},
 
-{code:"8.4.6",name:"Gestión de las Personas II",cycle:"profesional",cor:["8.3.4"]},
-{code:"8.4.7",name:"Derecho Empresario",cycle:"profesional",cor:["8.2.7"]},
-{code:"8.4.8",name:"Dirección General",cycle:"profesional",cor:["8.2.6","8.3.1","8.3.3","8.3.5"]},
+/* PROFESIONAL */
 
-{code:"8.4.4",name:"Finanzas Públicas",cycle:"electivas",cor:["8.1.4","8.1.7"]},
-{code:"8.4.5",name:"Psicosociología Organizacional",cycle:"electivas",cor:["8.1.6"]},
-{code:"8.4.9",name:"Finanzas Avanzadas",cycle:"electivas",cor:["8.4.3"]},
-{code:"8.4.10",name:"Inteligencia de Negocios y Análisis de Datos",cycle:"electivas",cor:["8.2.3","8.2.5"]},
-{code:"OPT",name:"Materia Optativa",cycle:"electivas",cor:[]}
+{c:"8.3.1",n:"Marketing Estratégico",h:96,cor:["8.2.3"],cycle:"Profesional"},
+{c:"8.3.2",n:"Diseño de Sistemas de Información",h:96,cor:["8.1.7","8.2.3"],cycle:"Profesional"},
+{c:"8.3.3",n:"Cálculo Financiero",h:96,cor:["8.1.5","8.2.1","8.2.3"],cycle:"Profesional"},
+
+{c:"8.3.4",n:"Gestión de las Personas I",h:96,cor:["8.1.6","8.2.3"],cycle:"Profesional"},
+{c:"8.3.5",n:"Planeamiento y Control Organizacional",h:96,cor:["8.2.1","8.2.3","8.2.6"],cycle:"Profesional"},
+{c:"8.3.6",n:"Operaciones",h:96,cor:["8.2.3","8.2.6"],cycle:"Profesional"},
+
+{c:"8.4.1",n:"Marketing Operativo",h:64,cor:["8.2.5","8.3.1"],cycle:"Profesional"},
+{c:"8.4.2",n:"Estrategia Tecnológica y Gestión IT",h:64,cor:["8.3.2"],cycle:"Profesional"},
+{c:"8.4.3",n:"Finanzas de Empresas",h:96,cor:["8.3.3"],cycle:"Profesional"},
+
+{c:"8.4.6",n:"Gestión de las Personas II",h:64,cor:["8.3.4"],cycle:"Profesional"},
+{c:"8.4.7",n:"Derecho Empresario",h:64,cor:["8.2.7"],cycle:"Profesional"},
+{c:"8.4.8",n:"Dirección General",h:96,cor:["8.2.6","8.3.1","8.3.3","8.3.5"],cycle:"Profesional"},
+
+/* ELECTIVAS */
+
+{c:"8.4.4",n:"Finanzas Públicas",h:48,cor:["8.1.4","8.1.7"],cycle:"Electivas"},
+{c:"8.4.5",n:"Psicosociología Organizacional",h:48,cor:["8.1.6"],cycle:"Electivas"},
+{c:"8.4.9",n:"Finanzas Avanzadas",h:48,cor:["8.4.3"],cycle:"Electivas"},
+{c:"8.4.10",n:"Inteligencia de Negocios",h:48,cor:["8.2.3","8.2.5"],cycle:"Electivas"},
+{c:"OPT",n:"Materia Optativa",h:48,cor:[],cycle:"Electivas"}
 
 ];
 
-const completed = new Set(JSON.parse(localStorage.getItem("done")||"[]"));
+/* ---------- ESTADO ---------- */
 
-function createSubject(s){
-  const div=document.createElement("div");
-  div.className="subject";
-  div.id=s.code;
+const done=new Set(JSON.parse(localStorage.getItem("done")||"[]"));
 
-  const tooltip=document.createElement("div");
-  tooltip.className="tooltip";
-  tooltip.innerText=s.cor.length?("Correlativas: "+s.cor.join(", ")):"Sin correlativas";
+function save(){
+localStorage.setItem("done",JSON.stringify([...done]));
+}
 
-  div.innerHTML=`<strong>${s.code}</strong><br>${s.name}`;
-  div.appendChild(tooltip);
+/* ---------- RENDER ---------- */
 
-  function unlocked(){
-    return s.cor.every(c=>completed.has(c));
-  }
+const app=document.getElementById("app");
 
-  function refresh(){
-    div.classList.toggle("locked",!unlocked());
-    div.classList.toggle("completed",completed.has(s.code));
-  }
-
-  div.onclick=()=>{
-    if(!unlocked()) return;
-    if(completed.has(s.code)) completed.delete(s.code);
-    else completed.add(s.code);
-    localStorage.setItem("done",JSON.stringify([...completed]));
-    updateAll();
-  };
-
-  refresh();
-  return div;
+function unlocked(s){
+return s.cor.every(c=>done.has(c));
 }
 
 function render(){
-  subjects.forEach(s=>{
-    const el=createSubject(s);
-    document.getElementById(s.cycle).appendChild(el);
-  });
-}
 
+app.innerHTML="";
+
+const cycles=["Propedéutico","Básico","Profesional","Electivas"];
+
+cycles.forEach(cycle=>{
+
+const col=document.createElement("div");
+col.className="cycle";
+
+col.innerHTML=`<h2>${cycle}</h2>`;
+
+subjects.filter(s=>s.cycle===cycle).forEach(s=>{
+
+const div=document.createElement("div");
+div.className="subject";
+
+if(done.has(s.c)) div.classList.add("done");
+else if(!unlocked(s)) div.classList.add("locked");
+
+div.innerHTML=`
+<small>${s.c}</small>
+${s.n}
+<div class="tooltip">
+${s.h} hs<br>
+Correlativas: ${s.cor.length?s.cor.join(", "):"—"}
+</div>
+`;
+
+div.onclick=()=>{
+
+if(!unlocked(s) && !done.has(s.c)) return;
+
+if(done.has(s.c)) done.delete(s.c);
+else done.add(s.c);
+
+save();
 render();
+};
 
-/* Progreso */
+col.appendChild(div);
+
+});
+
+app.appendChild(col);
+
+});
+
+updateProgress();
+}
+
+/* ---------- PROGRESO ---------- */
+
 function updateProgress(){
-  const total=subjects.length;
-  const done=completed.size;
-  const percent=Math.round(done/total*100);
-  document.getElementById("progressText").innerText=
-    percent+"% completado";
+
+const total=subjects.length;
+const percent=Math.round(done.size/total*100);
+
+document.getElementById("progressBox").textContent=percent+"%";
+
 }
 
-function updateAll(){
-  document.querySelectorAll(".subject").forEach(el=>{
-    const code=el.id;
-    const subj=subjects.find(s=>s.code===code);
-    if(!subj) return;
-
-    const unlocked=subj.cor.every(c=>completed.has(c));
-
-    el.classList.toggle("locked",!unlocked);
-    el.classList.toggle("completed",completed.has(code));
-  });
-
-  updateProgress();
-}
-
-updateAll();
-
-/* Botón modo */
-function toggleMode(){
-  document.body.classList.toggle("vertical");
-
-  const btn=document.getElementById("modeBtn");
-
-  if(document.body.classList.contains("vertical")){
-    btn.innerText="Modo horizontal";
-  }else{
-    btn.innerText="Modo vertical";
-  }
-}
+/* ---------- RESET ---------- */
 
 function resetAll(){
-  completed.clear();
-  localStorage.removeItem("done");
-  updateAll();
+
+const ok=confirm(
+"Se perderán los datos guardados.\n\n¿Deseás resetear la malla?"
+);
+
+if(!ok) return;
+
+done.clear();
+save();
+render();
 }
+
+/* ---------- MODO ---------- */
+
+let mobile=false;
+
+function toggleMode(){
+
+mobile=!mobile;
+
+document.body.classList.toggle("mobile");
+
+document.getElementById("modeBtn").textContent=
+mobile?"Modo horizontal":"Modo vertical";
+
+}
+
+/* ---------- INIT ---------- */
+
+render();
 
 </script>
 
