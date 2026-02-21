@@ -192,9 +192,31 @@ button:hover{
   align-items:center;
 }
 
-/* ===== ELECTIVAS MÁS HORIZONTAL SOLO EN MODO NORMAL ===== */
-body:not(.vertical) .cycle:has(h2:contains("Electivas")){
-  min-width:520px;
+/* ===== MODAL RESET ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+}
+
+.modalBox{
+  background:#1a1a22;
+  padding:20px 25px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 0 20px rgba(0,0,0,.6);
+}
+
+.modalBox p{
+  margin-bottom:15px;
+}
+
+.modalBox button{
+  margin:5px;
 }
 </style>
 </head>
@@ -210,6 +232,15 @@ body:not(.vertical) .cycle:has(h2:contains("Electivas")){
 <div class="buttons">
   <button id="toggleMode">Modo vertical</button>
   <button id="resetBtn">Resetear malla</button>
+</div>
+
+<!-- MODAL RESET -->
+<div class="modal" id="resetModal">
+  <div class="modalBox">
+    <p>Se perderán los datos guardados. ¿Deseas continuar?</p>
+    <button id="confirmReset">Sí, resetear</button>
+    <button id="cancelReset">Cancelar</button>
+  </div>
 </div>
 
 <script>
@@ -366,11 +397,21 @@ function progreso(){
 
 }
 
+/* ===== RESET MODAL ===== */
+
+const modal = document.getElementById("resetModal");
+
 document.getElementById("resetBtn").onclick=()=>{
-  if(confirm("Se perderán los datos guardados. ¿Continuar?")){
-    localStorage.removeItem("estadoAdm");
-    location.reload();
-  }
+  modal.style.display="flex";
+};
+
+document.getElementById("cancelReset").onclick=()=>{
+  modal.style.display="none";
+};
+
+document.getElementById("confirmReset").onclick=()=>{
+  localStorage.removeItem("estadoAdm");
+  location.reload();
 };
 
 document.getElementById("toggleMode").onclick=(e)=>{
